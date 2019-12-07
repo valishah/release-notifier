@@ -3028,11 +3028,10 @@ const fetchReleases = async (request) => {
         repo: request.repository_name,
         per_page: 1,
     });
-    console.log('============ Releases =========');
-    console.log(JSON.stringify(releases.data));
+   return releases? releases.data: [];
 };
 
-const processAction = () => {
+const processAction = async () => {
     try {
         // `who-to-greet` input defined in action metadata file
         const nameToGreet = core.getInput('who-to-greet');
@@ -3042,18 +3041,19 @@ const processAction = () => {
         const time = (new Date()).toTimeString();
         core.setOutput("time", time);
         // Get the JSON webhook payload for the event that triggered the workflow
-        const payload = JSON.stringify(github.context.payload, undefined, 2)
-        console.log(`The event payload: ${payload}`);
+        // const payload = JSON.stringify(github.context.payload, undefined, 2)
+        // console.log(`The event payload: ${payload}`);
         const repository = github.context.payload.repository;
         const repository_name = repository.name;
         const owner_name =  repository.owner.name;
         console.log(`Repository: ${repository_name}`);
         console.log(`Owner ${owner_name}`);
-        const releases = fetchReleases({
+        const releases = await fetchReleases({
             token,
             repository_name,
             owner_name
         });
+        console.log('============ Releases =========');
         console.log(`${JSON.stringify(releases)}`);
     
     } catch (error) {
