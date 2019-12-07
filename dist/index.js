@@ -3048,7 +3048,7 @@ const processAction = () => {
         const repository_name = repository && repository.name;
         const owner_name =  repository && repository.owner.name;
         console.log(`Repository: ${repository_name}`);
-        console.log(`Owner ${owner}`);
+        console.log(`Owner ${owner_name}`);
         console.log('===== Context ========');
         console.log(JSON.stringify(github.context));
     
