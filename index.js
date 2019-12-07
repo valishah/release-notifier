@@ -25,18 +25,16 @@ const processAction = () => {
         const payload = JSON.stringify(github.context.payload, undefined, 2)
         console.log(`The event payload: ${payload}`);
         const repository = github.context.payload.repository;
-        const repository_name = repository && repository.name;
-        const owner_name =  repository && repository.owner.name;
+        const repository_name = repository.name;
+        const owner_name =  repository.owner.name;
         console.log(`Repository: ${repository_name}`);
         console.log(`Owner ${owner_name}`);
-        console.log('===== Context ========');
-        console.log(github.context.repo());
-    
-        fetchReleases({
+        const releases = fetchReleases({
             token,
             repository_name,
             owner_name
         });
+        console.log(`${JSON.stringify(releases)}`);
     
     } catch (error) {
         core.setFailed(error.message);
