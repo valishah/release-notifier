@@ -12,12 +12,13 @@ try {
     // Get the JSON webhook payload for the event that triggered the workflow
     const payload = JSON.stringify(github.context.payload, undefined, 2)
     console.log(`The event payload: ${payload}`);
-    // console.log('====== Context Repo ========')
-    // console.log(`${github.context.repo()}`);
-    // console.log('====== Context Repository ========');
-    // console.log(`${github.context.repository}`);
-    // console.log('========= Context ========');
-    // console.log(github.context);
+    const repository = github.context.payload.repository;
+    const repository_name = repository && repository.name;
+    const owner =  repository && repository.owner.name;
+    console.log(`Repository: ${repository_name}`);
+    console.log(`Owner ${owner}`);
+    console.log('===== Context ========');
+    console.log(JSON.stringify(context));
 
     // const octokit = new github.GitHub(token);
     // const data = await octokit.repos.listReleases({
