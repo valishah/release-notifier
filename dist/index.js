@@ -3023,13 +3023,13 @@ const github = __webpack_require__(153);
 
 const fetchReleases = async (request) => {
     const octokit = new github.GitHub(request.token);
-    const data = await octokit.repos.listReleases({
+    const releases = await octokit.repos.listReleases({
         owner: request.owner_name,
         repo: request.repository_name,
         per_page: 1,
     });
     console.log('============ Releases =========');
-    console.log(JSON.stringify(data));
+    console.log(JSON.stringify(releases.data));
 };
 
 const processAction = () => {
@@ -3050,7 +3050,7 @@ const processAction = () => {
         console.log(`Repository: ${repository_name}`);
         console.log(`Owner ${owner_name}`);
         console.log('===== Context ========');
-        console.log(JSON.stringify(github.context));
+        console.log(github.context.repo());
     
         fetchReleases({
             token,
