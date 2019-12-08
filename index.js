@@ -12,11 +12,17 @@ const fetchReleases = async (request) => {
    return releases? releases.data: [];
 };
 
+const isDraftRelease = (releases) => {
+    if(!releases || !releases.length) return false;
+    return releases[0].draft;
+}
 
 
 const processAction = async () => {
     try {
         const token = core.getInput('repo-token');
+        const slack_token = core.getInput('slack-bot-token');
+        const slack_message = core.getInput('slack-message');
         /* const time = (new Date()).toTimeString();
         core.setOutput("time", time);
         Get the JSON webhook payload for the event that triggered the workflow
@@ -35,15 +41,18 @@ const processAction = async () => {
         console.log('============ Releases =========');
         console.log(`${JSON.stringify(releases)}`);
 
-        const slack_token = core.getInput('slack-bot-token');
-        const slack_message = core.getInput('slack-message');
+        if(!isDraftRelease(releases)){
+            console.log('No draft release found to execute slack notification');
+        }
+
         console.log(`Slack Token: ${slack_token}`);
         console.log('==== Slack Message ===');
         console.log(slack_message);
 
-        const slack_result = await sendMessage(slack_token, JSON.parse(slack_message));
+        const response = await sendMessage(slack_token, JSON.parse(slack_message));
         console.log(' =========== RESULT =========');
-        console.log(slack_result);
+        console.log(response);
+        core.setOutput('slack-response', response);
     
     } catch (error) {
         core.setFailed(error.message);

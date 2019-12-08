@@ -3,7 +3,7 @@ on:
         branches: [master]
 
 jobs:
-  hello_world_job:
+  release_notifier_job:
     runs-on: ubuntu-latest
     name: Release Notifier
     steps:
@@ -12,11 +12,11 @@ jobs:
         uses: actions/checkout@v1
       - name: Fetch releases
         uses: ./ # Uses an action in the root directory
-        # id: hello
+        id: notify
         with:
           repo-token: ${{ secrets.GITHUB_TOKEN }}
           slack-bot-token: ${{ secrets.SLACK_BOT_TOKEN }}
           slack-message: '{"channel":"C1234567890","text":"Hello world"}'
-      # # Use the output from the `hello` step
-      # - name: Get the output time
-      #   run: echo "The time was ${{ steps.hello.outputs.time }}"
+      # # Use the output from the `notify` step
+      - name: Response from slack post message
+        run: echo "The response was ${{ steps.notify.outputs.slack-reponse }}"
