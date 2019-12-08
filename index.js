@@ -1,5 +1,6 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
+const sendMessage = require('./src/post-message');
 
 const fetchReleases = async (request) => {
     const octokit = new github.GitHub(request.token);
@@ -10,6 +11,8 @@ const fetchReleases = async (request) => {
     });
    return releases? releases.data: [];
 };
+
+
 
 const processAction = async () => {
     try {
@@ -31,6 +34,14 @@ const processAction = async () => {
         });
         console.log('============ Releases =========');
         console.log(`${JSON.stringify(releases)}`);
+
+        const slack_token = core.getInput('slack-bot-token');
+        const slack_message = core.getInput('slack-message');
+        console.log(`Slack Token: ${slack_token}`);
+        console.log('==== Slack Message ===');
+        console.log(slack_message);
+
+        const slack_result = await sendMessage(slack_token, slack_message);
     
     } catch (error) {
         core.setFailed(error.message);

@@ -145,6 +145,40 @@ module.exports._enoent = enoent;
 
 /***/ }),
 
+/***/ 35:
+/***/ (function(module, __unusedexports, __webpack_require__) {
+
+const { SLACK_API_ENDPOINT } = __webpack_require__(281);
+
+const post = (token, message) => {
+    return new Promise((resolve, reject) => {
+        fetch(SLACK_API_ENDPOINT, {
+            method: 'POST', 
+            headers: new Headers({
+                "Content-Type": "application/json; charset=utf-8",
+                Authorization: `Bearer ${token}`
+            }),
+            body: JSON.stringify(message),
+        }).then(res => res.json())
+        .then( data => resolve(data))
+        .catch(error => reject(err));
+    });
+};
+  
+const sendMessage = async (token, message) => {
+    const response = await post(token, message);
+    const result = JSON.parse(response.result);
+
+    if (!result || !result.ok || response.statusCode !== 200) {
+        throw `Error! ${JSON.stringify(response)}`;
+    }
+    return response;
+};
+
+  module.exports = sendMessage;
+
+/***/ }),
+
 /***/ 39:
 /***/ (function(module) {
 
@@ -1765,6 +1799,15 @@ module.exports = withDefaults(request, {
 
 /***/ }),
 
+/***/ 281:
+/***/ (function(module) {
+
+module.exports = {
+    SLACK_API_ENDPOINT: 'https://slack.com/api/chat.postMessage'
+}
+
+/***/ }),
+
 /***/ 291:
 /***/ (function(module) {
 
@@ -3020,6 +3063,7 @@ function octokitRestApiEndpoints(octokit) {
 
 const core = __webpack_require__(418);
 const github = __webpack_require__(153);
+const sendMessage = __webpack_require__(35);
 
 const fetchReleases = async (request) => {
     const octokit = new github.GitHub(request.token);
@@ -3030,6 +3074,8 @@ const fetchReleases = async (request) => {
     });
    return releases? releases.data: [];
 };
+
+
 
 const processAction = async () => {
     try {
@@ -3051,6 +3097,14 @@ const processAction = async () => {
         });
         console.log('============ Releases =========');
         console.log(`${JSON.stringify(releases)}`);
+
+        const slack_token = core.getInput('slack-bot-token');
+        const slack_message = core.getInput('slack-message');
+        console.log(`Slack Token: ${slack_token}`);
+        console.log('==== Slack Message ===');
+        console.log(slack_message);
+
+        const slack_result = await sendMessage(slack_token, slack_message);
     
     } catch (error) {
         core.setFailed(error.message);

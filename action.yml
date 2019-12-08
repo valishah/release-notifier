@@ -2,8 +2,15 @@ name: 'Release Notifier'
 description: 'Set a slack reminder for drafted releases'
 inputs:
   repo-token:  # id of input
-    description: 'GITHUB Token'
+    description: 'Github token'
     required: true
+  slack-bot-token:
+    description: 'Slack bot token'
+    required: true
+  slack-message: 
+    description: 'Message with channel name you wanted to post'
+    required: true
+
 runs:
   using: 'node12'
   main: 'dist/index.js'
