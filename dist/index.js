@@ -155,13 +155,12 @@ const post = (token, message) => {
     return new Promise((resolve, reject) => {
         fetch(SLACK_API_ENDPOINT, {
             method: 'POST', 
-            headers: new Headers({
+            headers: {
                 "Content-Type": "application/json; charset=utf-8",
                 Authorization: `Bearer ${token}`
-            }),
+            },
             body: JSON.stringify(message),
-        }).then(res => res.json())
-        .then( data => resolve(data))
+        }).then( data => resolve(data))
         .catch(error => reject(err));
     });
 };
