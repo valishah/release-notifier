@@ -40,9 +40,10 @@ const processAction = async () => {
         console.log(`Slack Token: ${slack_token}`);
         console.log('==== Slack Message ===');
         console.log(slack_message);
-        console.log(JSON.parse(slack_message));
 
-        const slack_result = await sendMessage(slack_token, slack_message);
+        const slack_result = await sendMessage(slack_token, JSON.parse(slack_message));
+        console.log(' =========== RESULT =========');
+        console.log(slack_result);
     
     } catch (error) {
         core.setFailed(error.message);

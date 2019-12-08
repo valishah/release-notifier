@@ -1,28 +1,29 @@
 const fetch = require('node-fetch');
 const { SLACK_API_ENDPOINT } = require('./constants');
 
-const post = (token, message) => {
-    return new Promise((resolve, reject) => {
-        fetch(SLACK_API_ENDPOINT, {
-            method: 'POST', 
-            headers: {
-                "Content-Type": "application/json; charset=utf-8",
-                Authorization: `Bearer ${token}`
-            },
-            body: message,
-        }).then( data => resolve(data))
-        .catch(error => reject(err));
-    });
-};
-  
-const sendMessage = async (token, message) => {
-    const response = await post(token, message);
-    const result = JSON.parse(response.result);
+const sendMessage = (token, message) => {
 
-    if (!result || !result.ok || response.statusCode !== 200) {
+    return fetch(SLACK_API_ENDPOINT, {
+        method: 'POST', 
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(message),
+    }).then(res => res.json())
+    .then( data => {
+        console.log('====== RESPONSE =======');
+        console.log(data);
+        if(!data || !data.result || !data.result.ok){
+            throw `Error! ${JSON.stringify(data)}`;
+        }
+        return data;
+    })
+    .catch(error => {
+        console.log('====== ERROR =======');
+        console.log(error);
         throw `Error! ${JSON.stringify(response)}`;
-    }
-    return response;
+    });
 };
 
   module.exports = sendMessage;

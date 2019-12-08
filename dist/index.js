@@ -151,28 +151,29 @@ module.exports._enoent = enoent;
 const fetch = __webpack_require__(670);
 const { SLACK_API_ENDPOINT } = __webpack_require__(281);
 
-const post = (token, message) => {
-    return new Promise((resolve, reject) => {
-        fetch(SLACK_API_ENDPOINT, {
-            method: 'POST', 
-            headers: {
-                "Content-Type": "application/json; charset=utf-8",
-                Authorization: `Bearer ${token}`
-            },
-            body: message,
-        }).then( data => resolve(data))
-        .catch(error => reject(err));
-    });
-};
-  
-const sendMessage = async (token, message) => {
-    const response = await post(token, message);
-    const result = JSON.parse(response.result);
+const sendMessage = (token, message) => {
 
-    if (!result || !result.ok || response.statusCode !== 200) {
+    return fetch(SLACK_API_ENDPOINT, {
+        method: 'POST', 
+        headers: {
+            "Content-Type": "application/json; charset=utf-8",
+            Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify(message),
+    }).then(res => res.json())
+    .then( data => {
+        console.log('====== RESPONSE =======');
+        console.log(data);
+        if(!data || !data.result || !data.result.ok){
+            throw `Error! ${JSON.stringify(data)}`;
+        }
+        return data;
+    })
+    .catch(error => {
+        console.log('====== ERROR =======');
+        console.log(error);
         throw `Error! ${JSON.stringify(response)}`;
-    }
-    return response;
+    });
 };
 
   module.exports = sendMessage;
@@ -3103,9 +3104,10 @@ const processAction = async () => {
         console.log(`Slack Token: ${slack_token}`);
         console.log('==== Slack Message ===');
         console.log(slack_message);
-        console.log(JSON.parse(slack_message));
 
-        const slack_result = await sendMessage(slack_token, slack_message);
+        const slack_result = await sendMessage(slack_token, JSON.parse(slack_message));
+        console.log(' =========== RESULT =========');
+        console.log(slack_result);
     
     } catch (error) {
         core.setFailed(error.message);
