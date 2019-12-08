@@ -162,17 +162,13 @@ const sendMessage = (token, message) => {
         body: JSON.stringify(message),
     }).then(res => res.json())
     .then( data => {
-        console.log('====== RESPONSE =======');
-        console.log(data);
-        if(!data || !data.result || !data.result.ok){
-            throw `Error! ${JSON.stringify(data)}`;
+        if(!data || !data.ok){
+            throw data;
         }
         return data;
     })
     .catch(error => {
-        console.log('====== ERROR =======');
-        console.log(error);
-        throw `Error! ${JSON.stringify(response)}`;
+        throw new Error(JSON.stringify(error));
     });
 };
 
