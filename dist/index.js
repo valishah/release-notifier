@@ -148,6 +148,7 @@ module.exports._enoent = enoent;
 /***/ 35:
 /***/ (function(module, __unusedexports, __webpack_require__) {
 
+const fetch = __webpack_require__(670);
 const { SLACK_API_ENDPOINT } = __webpack_require__(281);
 
 const post = (token, message) => {

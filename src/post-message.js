@@ -1,3 +1,4 @@
+const fetch = require('node-fetch');
 const { SLACK_API_ENDPOINT } = require('./constants');
 
 const post = (token, message) => {
