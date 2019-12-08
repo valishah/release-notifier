@@ -40,6 +40,7 @@ const processAction = async () => {
         console.log(`Slack Token: ${slack_token}`);
         console.log('==== Slack Message ===');
         console.log(slack_message);
+        console.log(JSON.parse(slack_message));
 
         const slack_result = await sendMessage(slack_token, slack_message);
     

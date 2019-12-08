@@ -159,7 +159,7 @@ const post = (token, message) => {
                 "Content-Type": "application/json; charset=utf-8",
                 Authorization: `Bearer ${token}`
             },
-            body: JSON.stringify(message),
+            body: message,
         }).then( data => resolve(data))
         .catch(error => reject(err));
     });
@@ -3103,6 +3103,7 @@ const processAction = async () => {
         console.log(`Slack Token: ${slack_token}`);
         console.log('==== Slack Message ===');
         console.log(slack_message);
+        console.log(JSON.parse(slack_message));
 
         const slack_result = await sendMessage(slack_token, slack_message);
     
